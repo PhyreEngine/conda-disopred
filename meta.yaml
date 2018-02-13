@@ -1,0 +1,36 @@
+{% set name = "DISOPRED" %}
+{% set version = "3.16" %}
+# sha256 is the prefered checksum -- you can get it for a file with:
+#  `openssl sha256 <file name>`.
+# You may need the openssl package, available on conda-forge
+#  `conda install openssl -c conda-forge``
+
+package:
+  name: {{ name | lower }}
+  version: {{ version }}
+
+source:
+  - url: http://bioinfadmin.cs.ucl.ac.uk/downloads/{{name}}/{{name}}{{ version }}.tar.gz
+    sha256: 9767d2adddb308e07a677b3dba05ecadb40470b1fb679a90348f1c1fdff40621
+    patches:
+    - makefile.patch
+  - url: http://bioinfadmin.cs.ucl.ac.uk/downloads/DISOPRED/dso_lib.tar.gz
+    sha256: c4e77587e78b85b330d7834fe66786cc3c0e170258336636c71f6cd98a32f345
+    folder: dso_lib
+
+build:
+  script: |
+    make -C src
+    make -C src DESTDIR="$PREFIX" install
+
+requirements:
+  host:
+    - libgcc-ng
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+
+about:
+  home: http://bioinf.cs.ucl.ac.uk/psipred/?disopred=1
+  license: proprietary
+  license_file: LICENSE

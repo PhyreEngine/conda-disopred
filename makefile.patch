@@ -1,0 +1,34 @@
+--- a/src/Makefile	2018-02-13 18:12:47.139493302 +0000
++++ a/src/Makefile	2018-02-13 19:14:29.783070841 +0000
+@@ -9,21 +9,23 @@
+ #### LIBS	Libraries
+ 
+ INCDIR		= .
+-CXX      	= g++
+-CXXFLAGS 	= -Wall -O
+-CC       	= gcc
+-CCFLAGS  	= -Wall -O
+-LIBS		= -lm
++CXX      	?= g++
++CXXFLAGS 	?= -Wall -O
++CC       	?= gcc
++CCFLAGS  	?= -Wall -O
++LIBS		?= -lm
+ 
+ all:		disopred2 diso_neu_net diso_neighb combine svm-predict
+ 
+ install:
+-		mkdir ../bin/
+-		mv -t ../bin disopred2 diso_neu_net diso_neighb combine svm-predict
++		install -d $(DESTDIR)/bin
++		install -m 755 disopred2 diso_neu_net diso_neighb combine svm-predict $(DESTDIR)/bin
++		install -d $(DESTDIR)/share/disopred
++		cp -r ../dso_lib/ $(DESTDIR)/share/disopred/dso_lib
++		cp -r ../data/ $(DESTDIR)/share/disopred/data
+ 
+ clean:
+ 		rm -f disopred2 diso_neu_net diso_neighb combine svm-predict *~
+-		rm -rf ../bin/
+ 
+ disopred2:	pred_dis.cpp weights.cpp
+ 		$(CXX) $(CXXFLAGS) pred_dis.cpp weights.cpp $(LIBS) -o disopred2
